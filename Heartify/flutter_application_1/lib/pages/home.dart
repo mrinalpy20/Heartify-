@@ -1,21 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/homecard.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 
-class HomePage3 extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _HomePage3State createState() => _HomePage3State();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePage3State extends State<HomePage3> {
+class _HomePageState extends State<HomePage> {
+  List<Widget> homeCardsList = [
+    HomeCard(
+      text:
+          "Start your journey towards a healthier heart by predicting your disease risk.",
+      imageUrl: "assets/images/HomePageImage1.png",
+      imagewidth: 0.8,
+      padding: 0.05,
+    ),
+    HomeCard(
+      text:
+          "Simply and securely provide your heart test report details from the hospital to get accurate and personalized predictions that cater specifically to your unique health situation.",
+      imageUrl: "assets/images/HomePageImage2.png",
+      imagewidth: 1,
+      padding: 0.08,
+    ),
+    HomeCard(
+      text:
+          "Our ML-powered system predicts your heart disease probability and highlights actionable parameters like blood sugar cholesterol etc.",
+      imageUrl: "assets/images/HomePageImage3.png",
+      imagewidth: 1,
+      padding: 0.07,
+    ),
+  ];
+  int homecard_index = 0;
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       body: SwipeDetector(
-        onSwipeLeft: (offset) {},
+        onSwipeLeft: (offset) {
+          if (homecard_index < homeCardsList.length - 1) {
+            homecard_index++;
+            setState(() {});
+          } else {
+            Navigator.of(context).pushNamed("/details");
+          }
+        },
         onSwipeRight: (offset) {
-          Navigator.of(context).pushNamed("/home2");
+          if (homecard_index > 0) {
+            homecard_index--;
+            setState(() {});
+          }
         },
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,46 +78,10 @@ class _HomePage3State extends State<HomePage3> {
                 ],
               ),
             ),
-            Container(
-              width: deviceSize.width * 0.88,
-              decoration: BoxDecoration(
-                color: Color(0xffB2EDC4).withOpacity(0.6),
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    offset: Offset(0, 2),
-                    blurRadius: 1.0,
-                    spreadRadius: 2.0,
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(deviceSize.width * 0.08),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: deviceSize.width * 0.4,
-                    child: const Text(
-                      "Our ML-powered system predicts your heart disease probability and highlights actionable parameters like blood sugar cholesterol etc.",
-                      style: TextStyle(
-                          fontFamily: "Inter",
-                          color: Color.fromARGB(255, 99, 98, 98)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: deviceSize.height * 0.04,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: deviceSize.width * 0.10),
-                    child: Image.asset(
-                      'assets/images/HomePageImage3.png',
-                      width: deviceSize.width * 0.6,
-                    ),
-                  )
-                ],
-              ),
-            ),
+            homeCardsList[homecard_index],
+            // Stack(
+            //   children: stackChildren,
+            // ),
             Padding(
               padding: const EdgeInsets.only(left: 35, right: 35, top: 20),
               child: SliderTheme(
@@ -96,13 +95,13 @@ class _HomePage3State extends State<HomePage3> {
                   overlayShape: RoundSliderOverlayShape(overlayRadius: 20.0),
                 ),
                 child: Slider(
-                  value: 100,
+                  value: ((homecard_index + 1) / homeCardsList.length * 100),
                   min: 0.0,
                   max: 100.0,
                   onChanged: (newValue) {
-                    setState(() {
-                      // _sliderValue = newValue;
-                    });
+                    // setState(() {
+                    //   // _sliderValue = newValue;
+                    // });
                   },
                 ),
               ),
@@ -111,12 +110,12 @@ class _HomePage3State extends State<HomePage3> {
             Padding(
               padding: EdgeInsets.only(
                   bottom: deviceSize.height * 0.03,
-                  right: deviceSize.width * 0.01),
+                  right: deviceSize.width * 0.03),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Text(
-                    'Get started',
+                    'Skip',
                     style: TextStyle(
                       color: Color(0xFF122B1F),
                       fontSize: 15,
