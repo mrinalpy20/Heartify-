@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/details.dart';
+import 'package:flutter_application_1/pages/results.dart';
 import 'package:flutter_application_1/routes/route_generator.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_application_1/pages/home.dart';
-import 'package:flutter_application_1/pages/home2.dart';
-import 'package:flutter_application_1/pages/home3.dart';
 import 'package:flutter/services.dart';
 
 void main() {
@@ -24,7 +22,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         // primaryColor: Color(Constants.secondary_color),
       ),
-      home: HomePage(),
+      home: DetailsPage(),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

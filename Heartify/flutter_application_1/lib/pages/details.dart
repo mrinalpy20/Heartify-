@@ -1,8 +1,15 @@
+import 'dart:collection';
 import 'dart:ffi';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/userdata.dart';
+import 'package:flutter_application_1/provider/baseclient.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
+
+import '../models/data.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -13,7 +20,7 @@ class _DetailsPageState extends State<DetailsPage> {
   final age = TextEditingController();
   final sex = TextEditingController();
   final cp = TextEditingController();
-  final trestbsp = TextEditingController();
+  final trestbps = TextEditingController();
   final chol = TextEditingController();
   final thalch = TextEditingController();
   final exang = TextEditingController();
@@ -64,12 +71,23 @@ class _DetailsPageState extends State<DetailsPage> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: deviceSize.width * 0.08),
-                    child: const Text(
-                      "Details in!",
-                      style: TextStyle(
-                          fontFamily: "Inria Sans",
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700),
+                    child: InkWell(
+                      onTap: () async {
+                        var url = Uri.parse('http://localhost:8000');
+                        var response = await http.get(url);
+                        if (response.statusCode == 200) {
+                          print(response.body);
+                        } else {
+                          print('Error: ${response.statusCode}');
+                        }
+                      },
+                      child: const Text(
+                        "Details in!",
+                        style: TextStyle(
+                            fontFamily: "Inria Sans",
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
@@ -159,7 +177,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             if (value!.isEmpty ||
                                 int.parse(value!) <= 0 ||
                                 int.parse(value!) > 100) {
-                              return "Please enter a valid age";
+                              return "invalid value";
                             }
                             return null;
                           },
@@ -201,7 +219,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: sex,
@@ -240,7 +258,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: cp,
@@ -278,7 +296,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(35)),
                             ),
-                            hintText: "Trestbsp",
+                            hintText: "Trestbps",
                             hintStyle: const TextStyle(
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
@@ -292,10 +310,10 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty || int.parse(value!) <= 0) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
-                          controller: trestbsp,
+                          controller: trestbps,
                         ),
                       ),
                     ),
@@ -334,7 +352,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty || int.parse(value!) <= 0) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: chol,
@@ -374,7 +392,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty || int.parse(value!) <= 0) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: thalch,
@@ -425,7 +443,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: exang,
@@ -467,7 +485,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: fbs,
@@ -502,7 +520,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "Please enter a valid value";
+                            return "Invalid value";
                           }
                         },
                         controller: restecg,
@@ -554,7 +572,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty || double.parse(value!) < 0) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: oldpeak,
@@ -596,7 +614,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: ca,
@@ -635,7 +653,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "Please enter a valid value";
+                              return "Invalid value";
                             }
                           },
                           controller: slope,
@@ -649,8 +667,23 @@ class _DetailsPageState extends State<DetailsPage> {
                 height: deviceSize.height * 0.04,
               ),
               InkWell(
-                onTap: () {
-                  if (_formkey.currentState!.validate()) {}
+                onTap: () async {
+                  if (_formkey.currentState!.validate()) {
+                    UserData userData = UserData(
+                        age: age.text,
+                        sex: sex.text,
+                        cp: cp.text,
+                        trestbps: trestbps.text,
+                        chol: chol.text,
+                        fbs: fbs.text,
+                        restecg: restecg.text,
+                        thalch: thalch.text,
+                        exang: exang.text,
+                        oldpeak: oldpeak.text,
+                        slope: slope.text,
+                        ca: ca.text);
+                    helper(userData);
+                  }
                 },
                 child: Container(
                   height: 45,
@@ -673,5 +706,114 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       ),
     );
+  }
+
+  Future<void> helper(var userData) async {
+    //encoding age
+    int age = int.parse(userData.age);
+    int ageEncoded = 0;
+    var ageList = [40, 50, 60, 70, 150];
+    for (int i = 0; i < ageList.length; i++) {
+      if (age <= ageList[i]) {
+        ageEncoded = i;
+        break;
+      }
+    }
+    //encoding sex
+    String sex = userData.sex.toLowerCase();
+    int sexEncoded = sex[0] == 'm' ? 1 : 0;
+
+    //encoding chest pain
+    String cp = userData.cp.toLowerCase();
+    int cpEncoded = 0;
+    var cpList = [
+      "typical angina",
+      "atypical angina",
+      "non angina",
+      "asymptomatic"
+    ];
+
+    for (int i = 0; i < cpList.length; i++) {
+      if (cpList[i] == cp) {
+        cpEncoded = i + 1;
+      }
+    }
+
+    //encoding trestbps
+    int trestbps = int.parse(userData.trestbps);
+    var trestbpsList = [105, 120, 135, 150, 165, 180, 500];
+    int trestbpsEncoded = 0;
+
+    for (int i = 0; i < trestbpsList.length; i++) {
+      if (trestbps <= trestbpsList[i]) {
+        trestbpsEncoded = i + 1;
+        break;
+      }
+    }
+
+    //encoding cholestrol levels
+    int chol = int.parse(userData.chol);
+    var cholList = [175, 225, 275, 325, 375, 425, 475, 525, 1000];
+    int cholEncoded = 0;
+    for (int i = 0; i < cholList.length; i++) {
+      if (chol <= cholList[i]) {
+        cholEncoded = i;
+        break;
+      }
+    }
+    //encoding fbs
+    String fbs = userData.fbs.toLowerCase();
+    int fbsEncoded = fbs[0] == 't' ? 1 : 0;
+
+    //encoding restecg
+    String restecg = userData.restecg.toLowerCase();
+    int restecgEncoded = 0;
+    var restecgMap = HashMap();
+    restecgMap["n"] = 0;
+    restecgMap["s"] = 1;
+    restecgMap["l"] = 2;
+
+    restecgEncoded = restecgMap[restecg[0]] ?? 0;
+
+    //encoding thalch
+    int thalch = int.parse(userData.thalch);
+    var thalchList = [105, 120, 135, 150, 165, 180, 250];
+    int thalchEncoded = 0;
+    for (int i = 0; i < thalchList.length; i++) {
+      if (thalch <= thalchList[i]) {
+        thalchEncoded = i + 1;
+        break;
+      }
+    }
+    // encoding exang
+    String exang = userData.exang.toLowerCase();
+    int exangEncoded = exang[0] == "t" ? 1 : 0;
+
+    //encoding oldpeak
+    double oldpeak = double.parse(userData.oldpeak);
+    int oldpeakEncoded = oldpeak.floor();
+
+    //encoding slope
+    String slope = userData.slope.toLowerCase();
+    var slopeList = ["upsloping", "flat", "downsloping"];
+    int slopeEncoded = 0;
+    for (int i = 0; i < slopeList.length; i++) {
+      if (slopeList[i] == slope) {
+        slopeEncoded = i + 1;
+      }
+    }
+    var data = {
+      "age": ageEncoded.toString(),
+      "sex": sexEncoded.toString(),
+      "cp": cpEncoded.toString(),
+      "trestbps": trestbpsEncoded.toString(),
+      "chol": cholEncoded.toString(),
+      "fbs": fbsEncoded.toString(),
+      "restecg": restecgEncoded.toString(),
+      "thalch": thalchEncoded.toString(),
+      "exang": exangEncoded.toString(),
+      "oldpeak": oldpeakEncoded.toString(),
+      "slope": slopeEncoded.toString()
+    };
   }
 }

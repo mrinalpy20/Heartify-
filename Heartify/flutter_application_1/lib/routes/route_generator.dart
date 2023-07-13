@@ -3,8 +3,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/details.dart';
 import 'package:flutter_application_1/pages/home.dart';
-import 'package:flutter_application_1/pages/home2.dart';
-import 'package:flutter_application_1/pages/home3.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

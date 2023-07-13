@@ -1,17 +1,16 @@
-class UserData {
-  String age;
-  String sex;
-  String cp;
-  String trestbps;
-  String chol;
-  String fbs;
-  String restecg;
-  String thalch;
-  String exang;
-  String oldpeak;
-  String slope;
-  String ca;
-  UserData({
+class Data {
+  int age;
+  int sex;
+  int cp;
+  int trestbps;
+  int chol;
+  int fbs;
+  int restecg;
+  int thalch;
+  int exang;
+  int oldpeak;
+  int slope;
+  Data({
     required this.age,
     required this.sex,
     required this.cp,
@@ -23,6 +22,5 @@ class UserData {
     required this.exang,
     required this.oldpeak,
     required this.slope,
-    required this.ca,
   });
 }
