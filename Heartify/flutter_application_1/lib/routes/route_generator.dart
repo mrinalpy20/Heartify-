@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/details.dart';
 import 'package:flutter_application_1/pages/home.dart';
+import 'package:flutter_application_1/pages/results.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,6 +14,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomePage());
       case '/details':
         return MaterialPageRoute(builder: (_) => DetailsPage());
+      case '/results':
+        return MaterialPageRoute(
+            builder: (_) => ResultsPage(
+                  resultData: null,
+                ));
       // case '/home2':
       //   return MaterialPageRoute(builder: (_) => HomePage2());
       // case '/home3':
